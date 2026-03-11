@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EOD Briefing — 11 Mar 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap');
+
+  :root {
+    --bg: #080c10;
+    --bg2: #0d1117;
+    --bg3: #111820;
+    --border: #1e2d3d;
+    --accent: #00d4ff;
+    --accent2: #0088aa;
+    --green: #00ff88;
+    --green2: #00cc66;
+    --red: #ff3355;
+    --red2: #cc2244;
+    --yellow: #ffd700;
+    --yellow2: #ccaa00;
+    --orange: #ff8800;
+    --purple: #9966ff;
+    --text: #c8d8e8;
+    --text2: #7090a8;
+    --text3: #405060;
+    --white: #eaf4ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.08) 2px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 20px;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+    margin-bottom: 24px;
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .title-block {}
+
+  .title-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .title-main {
+    font-family: 'Orbitron', monospace;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--white);
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+
+  .title-main span {
+    color: var(--accent);
+  }
+
+  .title-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+
+  .status-block {
+    text-align: right;
+  }
+
+  .status-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    margin-right: 6px;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--green); }
+    50% { opacity: 0.4; box-shadow: none; }
+  }
+
+  .status-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 2px;
+  }
+
+  .status-date {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text2);
+    margin-top: 4px;
+  }
+
+  /* Futures strip */
+  .futures-strip {
+    display: flex;
+    gap: 24px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .fut-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+
+  .fut-sym {
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 1px;
+  }
+
+  .fut-price {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 16px;
+    color: var(--white);
+  }
+
+  .fut-chg {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+  }
+
+  .chg-up { color: var(--green); }
+  .chg-dn { color: var(--red); }
+
+  .fut-iv {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text2);
+    border-left: 1px solid var(--border);
+    padding-left: 10px;
+  }
+
+  /* ─── SECTION TITLES ─── */
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--border), transparent);
+  }
+
+  /* ─── NEWS ─── */
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .news-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent2);
+    padding: 12px 14px;
+    border-radius: 4px;
+    transition: border-color 0.2s;
+  }
+
+  .news-card:hover {
+    border-left-color: var(--accent);
+  }
+
+  .news-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 5px;
+  }
+
+  .news-tag.war { color: var(--red); }
+  .news-tag.macro { color: var(--yellow); }
+  .news-tag.energy { color: var(--orange); }
+  .news-tag.tech { color: var(--purple); }
+  .news-tag.eq { color: var(--green2); }
+
+  .news-headline {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+
+  .news-body {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.4;
+  }
+
+  /* ─── INSTRUMENT CARDS ─── */
+  .instruments-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  @media (max-width: 900px) {
+    .instruments-grid { grid-template-columns: 1fr; }
+  }
+
+  .instr-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .instr-header {
+    padding: 12px 14px 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .instr-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 2px;
+  }
+
+  .instr-name.es { color: #00ccff; }
+  .instr-name.nq { color: #cc88ff; }
+  .instr-name.cl { color: #ff8800; }
+
+  .instr-settle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    color: var(--white);
+  }
+
+  .instr-body {
+    padding: 12px 14px;
+  }
+
+  /* Stats row */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .stat-box {
+    background: var(--bg3);
+    padding: 7px 8px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+  }
+
+  .stat-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--text3);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .stat-val {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: var(--white);
+    margin-top: 2px;
+  }
+
+  .stat-val.up { color: var(--green); }
+  .stat-val.dn { color: var(--red); }
+  .stat-val.warn { color: var(--yellow); }
+  .stat-val.neutral { color: var(--accent); }
+
+  /* Levels map */
+  .levels-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .levels-map {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 14px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+  }
+
+  .level-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 6px;
+    border-radius: 2px;
+    transition: background 0.15s;
+  }
+
+  .level-row:hover { background: rgba(255,255,255,0.03); }
+
+  .level-price {
+    width: 68px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .level-bar {
+    width: 5px;
+    height: 14px;
+    border-radius: 1px;
+    flex-shrink: 0;
+  }
+
+  .level-desc {
+    font-size: 10px;
+    flex: 1;
+    line-height: 1.2;
+  }
+
+  /* Level types */
+  .lvl-res { color: var(--red); }
+  .lvl-res .level-bar { background: var(--red); }
+  .lvl-res .level-price { color: var(--red); }
+
+  .lvl-sup { color: var(--green); }
+  .lvl-sup .level-bar { background: var(--green); }
+  .lvl-sup .level-price { color: var(--green); }
+
+  .lvl-pin { color: var(--yellow); }
+  .lvl-pin .level-bar { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
+  .lvl-pin .level-price { color: var(--yellow); }
+
+  .lvl-cur { background: rgba(0,212,255,0.06); border: 1px solid rgba(0,212,255,0.2); }
+  .lvl-cur .level-price { color: var(--accent); font-weight: bold; }
+  .lvl-cur .level-bar { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+  .lvl-cur .level-desc { color: var(--accent); }
+
+  .lvl-range { color: var(--text3); }
+  .lvl-range .level-bar { background: var(--text3); }
+  .lvl-range .level-price { color: var(--text3); }
+
+  .lvl-sec { color: var(--text2); }
+  .lvl-sec .level-bar { background: var(--text2); }
+  .lvl-sec .level-price { color: var(--text2); }
+
+  .divider-row {
+    border-top: 1px dashed var(--border);
+    margin: 3px 0;
+  }
+
+  /* Vol ranges */
+  .vol-ranges {
+    margin-bottom: 14px;
+  }
+
+  .vol-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+  }
+
+  .vol-delta {
+    width: 28px;
+    color: var(--text3);
+    flex-shrink: 0;
+  }
+
+  .vol-bar-wrap {
+    flex: 1;
+    height: 10px;
+    background: var(--bg3);
+    border-radius: 2px;
+    position: relative;
+    overflow: visible;
+  }
+
+  .vol-bar-inner {
+    position: absolute;
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(to right, rgba(255,51,85,0.4), rgba(0,255,136,0.4));
+  }
+
+  .vol-marker {
+    position: absolute;
+    top: -1px;
+    width: 2px;
+    height: 12px;
+    background: var(--accent);
+    border-radius: 1px;
+  }
+
+  .vol-nums {
+    font-size: 10px;
+    color: var(--text2);
+    white-space: nowrap;
+  }
+
+  /* Bias tag */
+  .bias-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+
+  .bias-bear { background: rgba(255,51,85,0.15); color: var(--red); border: 1px solid var(--red2); }
+  .bias-bull { background: rgba(0,255,136,0.12); color: var(--green); border: 1px solid var(--green2); }
+  .bias-neutral { background: rgba(255,215,0,0.1); color: var(--yellow); border: 1px solid var(--yellow2); }
+  .bias-rebound { background: rgba(255,136,0,0.12); color: var(--orange); border: 1px solid #885500; }
+
+  /* Reading text */
+  .reading-text {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.5;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+  }
+
+  .reading-text strong {
+    color: var(--text);
+  }
+
+  /* ─── BIAS SECTION ─── */
+  .bias-section {
+    margin-bottom: 28px;
+  }
+
+  .bias-master {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 20px;
+  }
+
+  .bias-master-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 15px;
+    font-weight: 900;
+    color: var(--white);
+    margin-bottom: 14px;
+    letter-spacing: 2px;
+  }
+
+  .bias-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+
+  .bias-table th {
+    text-align: left;
+    padding: 6px 10px;
+    color: var(--text3);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bias-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(30,45,61,0.5);
+    vertical-align: middle;
+  }
+
+  .bias-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .instr-cell {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .pill-red { background: rgba(255,51,85,0.2); color: var(--red); }
+  .pill-green { background: rgba(0,255,136,0.15); color: var(--green); }
+  .pill-yellow { background: rgba(255,215,0,0.15); color: var(--yellow); }
+  .pill-orange { background: rgba(255,136,0,0.15); color: var(--orange); }
+  .pill-blue { background: rgba(0,212,255,0.12); color: var(--accent); }
+
+  /* Scenario boxes */
+  .scenarios {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 14px;
+  }
+
+  .scenario-box {
+    padding: 12px 14px;
+    border-radius: 4px;
+    border: 1px solid;
+  }
+
+  .scenario-bull {
+    background: rgba(0,255,136,0.04);
+    border-color: rgba(0,255,136,0.2);
+  }
+
+  .scenario-bear {
+    background: rgba(255,51,85,0.04);
+    border-color: rgba(255,51,85,0.2);
+  }
+
+  .scenario-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  .scenario-bull .scenario-title { color: var(--green); }
+  .scenario-bear .scenario-title { color: var(--red); }
+
+  .scenario-item {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text2);
+    margin-bottom: 4px;
+    display: flex;
+    gap: 6px;
+  }
+
+  .scenario-item::before {
+    content: '›';
+    flex-shrink: 0;
+  }
+
+  .scenario-bull .scenario-item::before { color: var(--green); }
+  .scenario-bear .scenario-item::before { color: var(--red); }
+
+  /* CME Overview */
+  .cme-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .cme-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 12px 14px;
+    border-radius: 4px;
+  }
+
+  .cme-card-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .cme-val {
+    font-family: 'Orbitron', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--white);
+  }
+
+  .cme-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text2);
+    margin-top: 3px;
+  }
+
+  .cme-bar {
+    margin-top: 6px;
+    height: 4px;
+    background: var(--bg3);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .cme-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+  }
+
+  /* PC ratio visual */
+  .pc-visual {
+    display: flex;
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+
+  /* Events */
+  .events-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .event-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left: 3px solid;
+    padding: 10px 14px;
+    border-radius: 4px;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .event-card.high { border-left-color: var(--red); }
+  .event-card.med { border-left-color: var(--yellow); }
+  .event-card.low { border-left-color: var(--text3); }
+
+  .event-time {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    margin-bottom: 3px;
+  }
+
+  .event-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  .event-note {
+    font-size: 11px;
+    color: var(--text2);
+    margin-top: 3px;
+  }
+
+  /* Footer */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .footer-left {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    line-height: 1.5;
+  }
+
+  .footer-right {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 2px;
+  }
+
+  /* Utility */
+  .mb16 { margin-bottom: 16px; }
+  .mb24 { margin-bottom: 24px; }
+
+  /* Gamma pin highlight */
+  .gamma-badge {
+    display: inline-block;
+    background: rgba(255,215,0,0.1);
+    border: 1px solid rgba(255,215,0,0.3);
+    color: var(--yellow);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══ HEADER ═══ -->
+  <div class="header">
+    <div class="header-top">
+      <div class="title-block">
+        <div class="title-label">// Derivatives Market Intelligence</div>
+        <div class="title-main">EOD <span>BRIEFING</span></div>
+        <div class="title-sub">QuikStrike EOD · CME Group · 10-MAR-2026 Close → 11-MAR-2026 Ops</div>
+      </div>
+      <div class="status-block">
+        <div><span class="status-dot"></span><span class="status-text">LIVE DATA</span></div>
+        <div class="status-date">WED 11 MAR 2026 · PRE-MARKET</div>
+        <div class="status-date" style="margin-top:4px;">GENERATED ~06:30 AM EDT</div>
+      </div>
+    </div>
+
+    <div class="futures-strip">
+      <div class="fut-item">
+        <div class="fut-sym">ES</div>
+        <div class="fut-price">6,771.5</div>
+        <div class="fut-chg chg-dn">▼ 15.75 (-0.23%)</div>
+        <div class="fut-iv">IV 29.14 <span style="color:var(--red)">▲23.26</span></div>
+      </div>
+      <div class="fut-item">
+        <div class="fut-sym">NQ</div>
+        <div class="fut-price">24,916</div>
+        <div class="fut-chg chg-dn">▼ 66.5 (-0.27%)</div>
+        <div class="fut-iv">IV 31.70 <span style="color:var(--red)">▲0.05</span></div>
+      </div>
+      <div class="fut-item">
+        <div class="fut-sym" style="color:var(--orange)">CL</div>
+        <div class="fut-price">83.45</div>
+        <div class="fut-chg chg-dn">▼ 11.32 (-11.93%)</div>
+        <div class="fut-iv">IV 218.91 <span style="color:var(--red)">▲23.26</span></div>
+      </div>
+      <div class="fut-item" style="background: rgba(0,212,255,0.05); border-color: rgba(0,212,255,0.2);">
+        <div class="fut-sym">ES PRE</div>
+        <div class="fut-price">6,808</div>
+        <div class="fut-chg chg-up">▲ +36.5 (+0.54%)</div>
+        <div class="fut-iv">CPI DAY <span style="color:var(--yellow)">⚠</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ EVENTOS DEL DÍA ═══ -->
+  <div class="section-title">Catalizadores del Día</div>
+  <div class="events-row mb24">
+    <div class="event-card high">
+      <div class="event-time">08:30 AM EDT · ALTO IMPACTO</div>
+      <div class="event-name">🔴 CPI Febrero 2026</div>
+      <div class="event-note">Dato más crítico del día. Mercado en modo wait-and-see. No capturará impacto de guerra Irán todavía.</div>
+    </div>
+    <div class="event-card high">
+      <div class="event-time">ACTIVO · GEOPOLÍTICA</div>
+      <div class="event-name">🔴 Guerra EE.UU.-Irán</div>
+      <div class="event-note">El Pentágono confirmó el día más intenso de bombardeos el martes. Ataques a buques en Estrecho de Ormuz esta mañana → CL +3.5% pre.</div>
+    </div>
+    <div class="event-card med">
+      <div class="event-time">PRE-MARKET · ENERGÍA</div>
+      <div class="event-name">🟡 Estrecho de Ormuz</div>
+      <div class="event-note">3 buques bajo fuego esta mañana. WTI rebota +3.5% (~86.4), Brent +2% (~91). La mayor refinería de UAE cerrada por dron.</div>
+    </div>
+    <div class="event-card low">
+      <div class="event-time">PRE-MARKET · TECH</div>
+      <div class="event-name">🟢 Semis como refugio</div>
+      <div class="event-note">NVDA +1.2%, MU +3.5%, INTC +2.6% ayer. Datos fuertes de TSMC. NQ outperforming vs ES en entorno de conflicto.</div>
+    </div>
+  </div>
+
+  <!-- ═══ NOTICIAS ═══ -->
+  <div class="section-title">Noticias Relevantes</div>
+  <div class="news-grid mb24">
+    <div class="news-card">
+      <div class="news-tag war">⚔ GUERRA</div>
+      <div class="news-headline">Trump: "Avanzamos hacia completar el objetivo militar"</div>
+      <div class="news-body">Hegseth dijo el martes que "hoy será el día más intenso de ataques en Irán". Casa Blanca desmintió escolta naval en el Estrecho. Perspectivas diplomáticas limitadas.</div>
+    </div>
+    <div class="news-card">
+      <div class="news-tag macro">📊 MACRO</div>
+      <div class="news-headline">CPI Febrero en foco — mercado en wait-and-see</div>
+      <div class="news-body">Futuros ES +0.3% pre-market (~6,808) a pesar de la incertidumbre. El reporte no capturará el shock de petróleo. Fed está pendiente del dato para próximos pasos.</div>
+    </div>
+    <div class="news-card">
+      <div class="news-tag energy">⛽ ENERGÍA</div>
+      <div class="news-headline">WTI rebota +3.5% tras ataques en Ormuz</div>
+      <div class="news-body">Tras colapsar -11.9% el martes (de $94.77 a $83.45), el petróleo rebota esta mañana. Irán posiblemente desplegando minas. Refinería UAE cerrada por drones.</div>
+    </div>
+    <div class="news-card">
+      <div class="news-tag tech">💻 TECH</div>
+      <div class="news-headline">Chips lideran recuperación — TSMC datos sólidos</div>
+      <div class="news-body">Nvidia +1.2%, Micron +3.5%, Intel +2.6% el martes. HPE superó EPS estimado. El sector semis actúa como refugio en el entorno bélico.</div>
+    </div>
+    <div class="news-card">
+      <div class="news-tag eq">📈 EQUITIES</div>
+      <div class="news-headline">Volatilidad en equities: CME Options OI en máximos</div>
+      <div class="news-body">OI de opciones S&P 500 sube a 6.23M contratos (+70K en un día). Ratio put/call en OI: 73.84% puts. Volumen 03/10 cayó vs martes pero OI sigue subiendo.</div>
+    </div>
+    <div class="news-card">
+      <div class="news-tag war">⚔ GEOPOLÍTICA</div>
+      <div class="news-headline">Steve Eisman (Big Short): "No cambio un solo trade"</div>
+      <div class="news-body">El inversor legendario dijo en CNBC que el conflicto Irán podría ser "muy positivo a largo plazo" para mercados. Mercado digiriendo si el conflicto es contenible.</div>
+    </div>
+  </div>
+
+  <!-- ═══ CME MARKET OVERVIEW ═══ -->
+  <div class="section-title">CME Equities Overview · 10-Mar-2026</div>
+  <div class="cme-grid mb24">
+    <div class="cme-card">
+      <div class="cme-card-title">Futures Volume</div>
+      <div class="cme-val">8.56M</div>
+      <div class="cme-sub">vs 9.66M ayer martes</div>
+      <div class="cme-bar"><div class="cme-bar-fill" style="width:70%; background: var(--accent2);"></div></div>
+    </div>
+    <div class="cme-card">
+      <div class="cme-card-title">Options Volume</div>
+      <div class="cme-val">1.78M</div>
+      <div class="cme-sub">vs 2.31M martes (-23%)</div>
+      <div class="cme-bar"><div class="cme-bar-fill" style="width:55%; background: var(--purple);"></div></div>
+    </div>
+    <div class="cme-card">
+      <div class="cme-card-title">Future OI</div>
+      <div class="cme-val">5.41M</div>
+      <div class="cme-sub">Estable ↔ (-11K)</div>
+      <div class="cme-bar"><div class="cme-bar-fill" style="width:80%; background: var(--green2);"></div></div>
+    </div>
+    <div class="cme-card">
+      <div class="cme-card-title">Options OI</div>
+      <div class="cme-val">6.24M</div>
+      <div class="cme-sub">▲ +70K vs lunes</div>
+      <div class="cme-bar"><div class="cme-bar-fill" style="width:85%; background: var(--red2);"></div></div>
+    </div>
+    <div class="cme-card">
+      <div class="cme-card-title">ES Puts OI Total</div>
+      <div class="cme-val">3.90M</div>
+      <div class="cme-sub">73.84% del total OI</div>
+      <div class="pc-visual">
+        <div style="width:26.16%; background: rgba(0,212,255,0.5); border-radius:3px 0 0 3px;"></div>
+        <div style="width:73.84%; background: rgba(255,51,85,0.5); border-radius:0 3px 3px 0;"></div>
+      </div>
+    </div>
+    <div class="cme-card">
+      <div class="cme-card-title">ES 0-5D Puts</div>
+      <div class="cme-val">82.82%</div>
+      <div class="cme-sub">4.03M puts en front-end</div>
+      <div class="cme-bar"><div class="cme-bar-fill" style="width:83%; background: var(--red);"></div></div>
+    </div>
+    <div class="cme-card">
+      <div class="cme-card-title">NQ Puts OI</div>
+      <div class="cme-val">54.79%</div>
+      <div class="cme-sub">0-5D menos extremo que ES</div>
+      <div class="pc-visual">
+        <div style="width:45.21%; background: rgba(153,102,255,0.5); border-radius:3px 0 0 3px;"></div>
+        <div style="width:54.79%; background: rgba(255,51,85,0.4); border-radius:0 3px 3px 0;"></div>
+      </div>
+    </div>
+    <div class="cme-card">
+      <div class="cme-card-title">Spread dominante</div>
+      <div class="cme-val">Vertical</div>
+      <div class="cme-sub">35.36% · Ratio 10.97%</div>
+      <div class="cme-bar"><div class="cme-bar-fill" style="width:35%; background: var(--yellow2);"></div></div>
+    </div>
+    <div class="cme-card">
+      <div class="cme-card-title">Top Strike Vol (ES)</div>
+      <div class="cme-val">6,800</div>
+      <div class="cme-sub">Mayor volumen acumulado trimestre</div>
+      <div class="cme-bar"><div class="cme-bar-fill" style="width:90%; background: var(--yellow);"></div></div>
+    </div>
+  </div>
+
+  <!-- ═══ INSTRUMENTOS ═══ -->
+  <div class="section-title">Análisis por Instrumento</div>
+  <div class="instruments-grid mb24">
+
+    <!-- ES -->
+    <div class="instr-card">
+      <div class="instr-header">
+        <div>
+          <div class="instr-name es">ES</div>
+          <div style="font-size:11px; color:var(--text2); font-family:'Share Tech Mono',monospace;">E-Mini S&P 500 · ESH6</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="instr-settle">6,771.5</div>
+          <div style="font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--red);">▼ 15.75</div>
+        </div>
+      </div>
+      <div class="instr-body">
+        <div class="stats-row">
+          <div class="stat-box">
+            <div class="stat-label">IV Spot</div>
+            <div class="stat-val warn">29.14</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">P/C Vol</div>
+            <div class="stat-val dn">3.17:1</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Gamma Pin</div>
+            <div class="stat-val warn">6,800</div>
+          </div>
+        </div>
+
+        <div class="levels-title">MAPA DE NIVELES</div>
+        <div class="levels-map">
+          <div class="level-row lvl-range">
+            <span class="level-price">6,967</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Rango 5Δ superior</span>
+          </div>
+          <div class="level-row lvl-range">
+            <span class="level-price">6,902</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Rango 15Δ superior</span>
+          </div>
+          <div class="level-row lvl-res">
+            <span class="level-price">6,900</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Call wall / Put wall · OI 7,469C</span>
+          </div>
+          <div class="level-row lvl-sec">
+            <span class="level-price">6,875</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Resistencia intermedia</span>
+          </div>
+          <div class="level-row lvl-res">
+            <span class="level-price">6,850</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">OI notable calls 4,108</span>
+          </div>
+          <div class="level-row lvl-range">
+            <span class="level-price">6,837</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Rango 25Δ superior</span>
+          </div>
+          <div class="level-row lvl-pin">
+            <span class="level-price">6,800</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">🎯 GAMMA PIN · OI máximo bilateral</span>
+          </div>
+          <div class="divider-row"></div>
+          <div class="level-row lvl-cur">
+            <span class="level-price">6,771.5</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">◄ CIERRE EOD</span>
+          </div>
+          <div class="divider-row"></div>
+          <div class="level-row lvl-sup">
+            <span class="level-price">6,750</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Soporte gamma · Put wall 8,285</span>
+          </div>
+          <div class="level-row lvl-range">
+            <span class="level-price">6,705</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Rango 25Δ inferior</span>
+          </div>
+          <div class="level-row lvl-sup">
+            <span class="level-price">6,700</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">🧱 MURO MASIVO · OI Put 14,958</span>
+          </div>
+          <div class="level-row lvl-range">
+            <span class="level-price">6,640</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Rango 15Δ inferior</span>
+          </div>
+          <div class="level-row lvl-range">
+            <span class="level-price">6,577</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Rango 5Δ inferior</span>
+          </div>
+        </div>
+
+        <span class="bias-tag bias-bear">BIAS: BAJISTA CORTO</span>
+        <div class="reading-text">
+          Precio 28.5 pts debajo del gamma pin. Zona equilibrio: <strong>6,750–6,800</strong>. Ruptura bajista: ceder 6,750 → imán <strong>6,700</strong>. Recuperación: reconquistar 6,800 → siguiente resistencia 6,850/6,900. Put/Call 3.17:1 = cobertura institucional agresiva en curso. Pre-market ES en <strong>~6,808</strong> (CPI + CL rebote).
+        </div>
+      </div>
+    </div>
+
+    <!-- NQ -->
+    <div class="instr-card">
+      <div class="instr-header">
+        <div>
+          <div class="instr-name nq">NQ</div>
+          <div style="font-size:11px; color:var(--text2); font-family:'Share Tech Mono',monospace;">E-Mini Nasdaq-100 · NQH6</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="instr-settle">24,916</div>
+          <div style="font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--red);">▼ 66.5</div>
+        </div>
+      </div>
+      <div class="instr-body">
+        <div class="stats-row">
+          <div class="stat-box">
+            <div class="stat-label">IV Spot</div>
+            <div class="stat-val warn">31.70</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">P/C Vol</div>
+            <div class="stat-val neutral">1.09:1</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Gamma Pin</div>
+            <div class="stat-val warn">25,000</div>
+          </div>
+        </div>
+
+        <div class="levels-title">MAPA DE NIVELES</div>
+        <div class="levels-map">
+          <div class="level-row lvl-range">
+            <span class="level-price">25,720</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Rango 5Δ superior</span>
+          </div>
+          <div class="level-row lvl-range">
+            <span class="level-price">25,449</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Rango 15Δ superior</span>
+          </div>
+          <div class="level-row lvl-res">
+            <span class="level-price">25,200</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Resistencia OI calls+puts 481</span>
+          </div>
+          <div class="level-row lvl-range">
+            <span class="level-price">25,180</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Rango 25Δ superior</span>
+          </div>
+          <div class="level-row lvl-res">
+            <span class="level-price">25,100</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Resistencia · delta put bias -153</span>
+          </div>
+          <div class="level-row lvl-pin">
+            <span class="level-price">25,000</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">🎯 GAMMA PIN · Put+Call wall máx</span>
+          </div>
+          <div class="divider-row"></div>
+          <div class="level-row lvl-cur">
+            <span class="level-price">24,916</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">◄ CIERRE EOD</span>
+          </div>
+          <div class="divider-row"></div>
+          <div class="level-row lvl-sup">
+            <span class="level-price">24,900</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Soporte OI inmediato · call bias +157</span>
+          </div>
+          <div class="level-row lvl-sup">
+            <span class="level-price">24,800</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Soporte secundario OI 335</span>
+          </div>
+          <div class="level-row lvl-range">
+            <span class="level-price">24,652</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Rango 25Δ inferior · vacío abajo</span>
+          </div>
+          <div class="level-row lvl-range">
+            <span class="level-price">24,391</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Rango 15Δ inferior</span>
+          </div>
+          <div class="level-row lvl-range">
+            <span class="level-price">24,134</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Rango 5Δ inferior</span>
+          </div>
+        </div>
+
+        <span class="bias-tag bias-neutral">BIAS: NEUTRAL / PIVOTE</span>
+        <div class="reading-text">
+          Precio 84 pts debajo del pin 25,000. P/C casi neutral (1.09:1). Menos gamma que ES → movimientos más bruscos. <strong>Alcista:</strong> reconquistar 25,000 → 25,100 → 25,200. <strong>Bajista:</strong> ceder 24,900 → 24,800 → espacio abierto a 24,652. Semis (NVDA/MU/INTC) como soporte de la estructura. NQ en pre-market ~<strong>25,058</strong>.
+        </div>
+      </div>
+    </div>
+
+    <!-- CL -->
+    <div class="instr-card">
+      <div class="instr-header">
+        <div>
+          <div class="instr-name cl">CL</div>
+          <div style="font-size:11px; color:var(--text2); font-family:'Share Tech Mono',monospace;">WTI Crude Oil · CLJ6</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="instr-settle">83.45</div>
+          <div style="font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--red);">▼ 11.32 (-11.9%)</div>
+        </div>
+      </div>
+      <div class="instr-body">
+        <div class="stats-row">
+          <div class="stat-box">
+            <div class="stat-label">IV Spot</div>
+            <div class="stat-val dn">218.91</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">P/C Vol</div>
+            <div class="stat-val up">0.78:1 C</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Gamma Pin</div>
+            <div class="stat-val warn">85.00</div>
+          </div>
+        </div>
+
+        <div class="levels-title">MAPA DE NIVELES</div>
+        <div class="levels-map">
+          <div class="level-row lvl-range">
+            <span class="level-price">94.44</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Rango 25Δ superior (base 87.12)</span>
+          </div>
+          <div class="level-row lvl-res">
+            <span class="level-price">89.00</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Cluster calls LOJ6 · OI 3,080C</span>
+          </div>
+          <div class="level-row lvl-sec">
+            <span class="level-price">88.37</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Referencia CLJ6 (gamma matrix)</span>
+          </div>
+          <div class="level-row lvl-res">
+            <span class="level-price">87.50</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Gamma/OI cluster calls</span>
+          </div>
+          <div class="level-row lvl-res">
+            <span class="level-price">86.50</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">OI calls LOJ6 · 1,566C</span>
+          </div>
+          <div class="level-row lvl-pin">
+            <span class="level-price">85.00</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">🎯 GAMMA PIN · Call wall masivo 36,716C</span>
+          </div>
+          <div class="divider-row"></div>
+          <div class="level-row lvl-cur">
+            <span class="level-price">83.45</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">◄ CIERRE EOD (+3.5% pre ~86.4)</span>
+          </div>
+          <div class="divider-row"></div>
+          <div class="level-row lvl-sup">
+            <span class="level-price">82.00</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Call wall secundario · soporte técnico</span>
+          </div>
+          <div class="level-row lvl-sup">
+            <span class="level-price">80.00</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">🧱 Call wall masivo · OI 35,635C LOJ6</span>
+          </div>
+          <div class="level-row lvl-range">
+            <span class="level-price">79.80</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Rango 25Δ inferior</span>
+          </div>
+          <div class="level-row lvl-range">
+            <span class="level-price">73.35</span>
+            <span class="level-bar"></span>
+            <span class="level-desc">Rango 15Δ inferior</span>
+          </div>
+        </div>
+
+        <span class="bias-tag bias-rebound">BIAS: REBOTE / SHOCK DIGEST</span>
+        <div class="reading-text">
+          Caída de -11.9% = evento de cola. IV 218 = firma de shock. Call bias 0.78:1 = mercado apostó al rebote. <strong>Resistencia gamma en 85</strong> — dealers cortos calls ahí. Con pre-market +3.5% (~86.4), precio se acerca al pin. Si supera 85 con fuerza → siguiente 87.5/89. Soporte estructural fuerte en <strong>80</strong>. Zona de consolidación esperada: <strong>80–85</strong>.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ BIAS MAESTRO ═══ -->
+  <div class="section-title">Bias del Día — 11 Mar 2026</div>
+  <div class="bias-section">
+    <div class="bias-master">
+      <div class="bias-master-title">📡 LECTURA GLOBAL DE MERCADO</div>
+
+      <table class="bias-table">
+        <thead>
+          <tr>
+            <th>Instrumento</th>
+            <th>Cierre EOD</th>
+            <th>Pre-Market</th>
+            <th>IV</th>
+            <th>P/C</th>
+            <th>Gamma Pin</th>
+            <th>Bias</th>
+            <th>Zona Clave</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="instr-cell" style="color:#00ccff">ES</span></td>
+            <td style="font-family:'Share Tech Mono',monospace;">6,771.5</td>
+            <td style="font-family:'Share Tech Mono',monospace; color:var(--green);">~6,808 ▲</td>
+            <td style="font-family:'Share Tech Mono',monospace;">29.14</td>
+            <td><span class="pill pill-red">3.17 PUTS</span></td>
+            <td><span class="gamma-badge">6,800</span></td>
+            <td><span class="pill pill-red">BAJISTA</span></td>
+            <td style="font-family:'Share Tech Mono',monospace; font-size:11px;">6,750–6,800</td>
+          </tr>
+          <tr>
+            <td><span class="instr-cell" style="color:#cc88ff">NQ</span></td>
+            <td style="font-family:'Share Tech Mono',monospace;">24,916</td>
+            <td style="font-family:'Share Tech Mono',monospace; color:var(--green);">~25,058 ▲</td>
+            <td style="font-family:'Share Tech Mono',monospace;">31.70</td>
+            <td><span class="pill pill-blue">1.09 NEUTRO</span></td>
+            <td><span class="gamma-badge">25,000</span></td>
+            <td><span class="pill pill-yellow">PIVOTE</span></td>
+            <td style="font-family:'Share Tech Mono',monospace; font-size:11px;">24,900–25,000</td>
+          </tr>
+          <tr>
+            <td><span class="instr-cell" style="color:#ff8800">CL</span></td>
+            <td style="font-family:'Share Tech Mono',monospace;">83.45</td>
+            <td style="font-family:'Share Tech Mono',monospace; color:var(--green);">~86.4 ▲+3.5%</td>
+            <td style="font-family:'Share Tech Mono',monospace; color:var(--red);">218.91 ⚠</td>
+            <td><span class="pill pill-green">0.78 CALLS</span></td>
+            <td><span class="gamma-badge">85.00</span></td>
+            <td><span class="pill pill-orange">REBOTE</span></td>
+            <td style="font-family:'Share Tech Mono',monospace; font-size:11px;">80–85 pivot</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="font-family:'Share Tech Mono',monospace; font-size:12px; color:var(--text2); margin-bottom:14px; padding:12px; background:var(--bg3); border-radius:4px; border-left: 3px solid var(--accent2); line-height:1.7;">
+        <span style="color:var(--accent);">// NARRATIVA:</span> Mercado atrapado entre dos fuerzas opuestas. 
+        El <span style="color:var(--red);">conflicto Irán</span> generó cobertura institucional masiva en ES (P/C 3.17:1) mientras el <span style="color:var(--green);">rebote de semis</span> sostiene NQ. 
+        El colapso de CL -11.9% fue procesado — hoy <span style="color:var(--orange);">rebota +3.5%</span> tras nuevos ataques en Ormuz. 
+        El <span style="color:var(--yellow);">CPI de hoy (8:30am)</span> es el catalizador binario del día: dato frío → rally hacia gamma pins; dato caliente → confirma presión bajista.
+        Ambos índices en pre-market POR ENCIMA de sus gamma pins → apertura favorable si el CPI no decepciona.
+      </div>
+
+      <div class="scenarios">
+        <div class="scenario-box scenario-bull">
+          <div class="scenario-title">▲ ESCENARIO ALCISTA</div>
+          <div class="scenario-item">CPI feb en línea o por debajo → rally alivio</div>
+          <div class="scenario-item">ES reconquista 6,800 (gamma pin) → 6,837 → 6,850</div>
+          <div class="scenario-item">NQ reconquista 25,000 → 25,100 → 25,200</div>
+          <div class="scenario-item">CL mantiene >85 → extensión hacia 87.5/89</div>
+          <div class="scenario-item">Trump señala resolución inminente del conflicto</div>
+        </div>
+        <div class="scenario-box scenario-bear">
+          <div class="scenario-title">▼ ESCENARIO BAJISTA</div>
+          <div class="scenario-item">CPI caliente o sorpresa alcista → venta forzada</div>
+          <div class="scenario-item">ES no puede mantener 6,800 → cede 6,750 → 6,700</div>
+          <div class="scenario-item">NQ cede 24,900 → 24,800 → espacio abierto a 24,652</div>
+          <div class="scenario-item">Nuevos ataques en Ormuz escalan → CL +5%+ → presión inflacionaria</div>
+          <div class="scenario-item">Iran minas en el Estrecho confirmadas → shock de oferta v2</div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px; padding:10px 14px; background:rgba(255,215,0,0.06); border:1px solid rgba(255,215,0,0.2); border-radius:4px;">
+        <span style="font-family:'Orbitron',monospace; font-size:10px; color:var(--yellow); letter-spacing:2px;">⚡ WATCHLIST INTRADAY</span>
+        <div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:10px; font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--text2);">
+          <span>ES: <span style="color:var(--yellow)">6,800</span> pin · <span style="color:var(--green)">6,750</span> sup · <span style="color:var(--red)">6,700</span> muro</span>
+          <span>|</span>
+          <span>NQ: <span style="color:var(--yellow)">25,000</span> pin · <span style="color:var(--green)">24,900</span> sup · <span style="color:var(--red)">24,800</span> pivote</span>
+          <span>|</span>
+          <span>CL: <span style="color:var(--yellow)">85.00</span> pin · <span style="color:var(--green)">82.00</span> sup · <span style="color:var(--red)">80.00</span> muro</span>
+          <span>|</span>
+          <span style="color:var(--yellow);">⏰ 8:30am CPI FEB</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ FOOTER ═══ -->
+  <div class="footer">
+    <div class="footer-left">
+      Fuentes: QuikStrike EOD 10-Mar-2026 · CME Group Equities Market Overview · Yahoo Finance / CNBC / Barchart (11-Mar-2026 pre-market)<br>
+      Este reporte es solo para propósitos informativos y educativos. No constituye asesoramiento financiero ni recomendación de inversión.<br>
+      Los futuros conllevan riesgo significativo de pérdida. El rendimiento pasado no garantiza resultados futuros.
+    </div>
+    <div class="footer-right">EOD BRIEFING · v2.0<br>11 MAR 2026</div>
+  </div>
+
+</div>
+</body>
+</html>
